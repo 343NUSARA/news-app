@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>G News - Alfa Vision</title>
+  <link href="https://fonts.googleapis.com/css2?family=Michroma&display=swap" rel="stylesheet">
+  <!-- ✅ GSAP CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+  <style>
+    :root {
+      --primary-color: #3498db;
+      --accent-color: #f39c12;
+      --bg-light: #f3faff;
+      --font-main: 'Segoe UI', sans-serif;
+      --text-dark: #333;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--font-main);
+      background-color: #fff;
+      padding-top: 80px;
+      color: var(--text-dark);
+    }
+
+    nav {
+      background-color: var(--bg-light);
+      box-shadow: 0 0 4px skyblue;
+      position: fixed;
+      top: 0;
+      z-index: 10;
+      left: 0;
+      right: 0;
+    }
+
+    .container {
+      max-width: 1180px;
+      margin: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem;
+    }
+
+    .navlogo {
+      height: 40px;
+      width: 40px;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+
+    h1 {
+      font-family: 'Michroma', sans-serif;
+      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+    }
+
+    ul {
+      list-style: none;
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    ul li {
+      cursor: pointer;
+      padding: 5px 10px;
+      transition: 0.3s;
+    }
+
+    ul li:hover {
+      background-color: var(--accent-color);
+      color: white;
+      border-radius: 4px;
+    }
+
+    .search-bar {
+      display: flex;
+      gap: 10px;
+    }
+
+    .newa-input {
+      padding: 6px 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .search-button {
+      padding: 6px 10px;
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    main {
+      max-width: 1180px;
+      margin: 20px auto;
+      padding: 20px;
+      display: grid;
+      gap: 1.5rem;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
+
+    .card {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 15px;
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+      transition: transform 0.3s;
+      opacity: 0; /* for animation */
+      transform: translateY(50px); /* start state */
+    }
+
+    .card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 6px;
+    }
+
+    .card h3 {
+      font-size: 1.1rem;
+      margin: 10px 0 5px;
+    }
+
+    .card p {
+      font-size: 0.9rem;
+      color: #555;
+    }
+
+    .card a {
+      display: inline-block;
+      margin-top: 10px;
+      text-decoration: none;
+      color: var(--primary-color);
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="container nav-container">
+      <h1>Alfa-vision <img src="./navlogo.jpg" class="navlogo" alt="logo"></h1>
+      <ul>
+        <li onclick="getNews('ipl')">IPL</li>
+        <li onclick="getNews('finance')">Finance</li>
+        <li onclick="getNews('politics')">Politics</li>
+      </ul>
+      <div class="search-bar">
+        <input type="text" class="newa-input" id="searchInput" placeholder="e.g. science">
+        <button class="search-button" onclick="searchNews()">Search</button>
+      </div>
+    </div>
+  </nav>
+
+  <main id="news-container">
+    <!-- News articles will appear here -->
+  </main>
+
+  <script>
+    const apiKey = "2f49741a2d41c860b22c92489fb12453"; // GNews API key
+    const newsContainer = document.getElementById('news-container');
+
+    async function getNews(query = 'India') {
+      newsContainer.innerHTML = `<p>Loading "${query}" news...</p>`;
+      try {
+        const res = await fetch(`https://gnews.io/api/v4/search?q=${query}&lang=en&token=${apiKey}`);
+        const data = await res.json();
+        renderNews(data.articles);
+      } catch (error) {
+        console.error(error);
+        newsContainer.innerHTML = "<p>Error fetching news. Please try again later.</p>";
+      }
+    }
+
+    function renderNews(articles) {
+      newsContainer.innerHTML = '';
+      if (!articles || articles.length === 0) {
+        newsContainer.innerHTML = "<p>No articles found for your query.</p>";
+        return;
+      }
+
+      articles.forEach((article, index) => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <img src="${article.image || 'https://via.placeholder.com/300x180'}" alt="News Image" />
+          <h3>${article.title}</h3>
+          <p>${article.description || 'No description available.'}</p>
+          <a href="${article.url}" target="_blank">Read More</a>
+        `;
+        newsContainer.appendChild(card);
+      });
+
+      // Animate the cards with GSAP
+      gsap.to(".card", {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        stagger: 0.1,
+        ease: "power2.out"
+      });
+    }
+
+    function searchNews() {
+      const query = document.getElementById('searchInput').value;
+      if (query) getNews(query);
+    }
+
+    // Animate nav items on load
+    window.addEventListener("load", () => {
+      gsap.from(".nav-container", {
+        y: -80,
+        opacity: 0,
+        duration: 1,
+        ease: "power4.out"
+      });
+      getNews();
+    });
+  </script>
+</body>
+</html>
