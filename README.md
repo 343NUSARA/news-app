@@ -27,18 +27,6 @@ Alfa Vision is a responsive news web application that delivers real-time news fr
 - Git & GitHub
 - Chrome DevTools
 
-## 📂 Project Structure
-
-```
-news-app/
-│
-├── index.html
-├── css/
-├── js/
-├── assets/
-├── images/
-└── README.md
-```
 
 ## ⚙️ How to Run
 
@@ -62,16 +50,6 @@ git clone https://github.com/343NUSARA/news-app.git
 - Added GSAP animations for an enhanced user experience.
 - Optimized DOM rendering for smooth performance.
 
-## 📸 Screenshots
-
-You can add screenshots of your application here.
-
-Example:
-
-```
-screenshots/homepage.png
-screenshots/search.png
-```
 
 ## 📈 Future Enhancements
 
@@ -91,4 +69,4 @@ screenshots/search.png
 
 ---
 
-⭐ If you found this project useful, consider giving it a star!
+
