@@ -1,1 +1,1 @@
-# news-app
+# Dynamic News Portal
